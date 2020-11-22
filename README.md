@@ -1,5 +1,5 @@
 # Maximin 
-##Prepare Datasets
+## Prepare Datasets
 * Download MNIST and MNIST-M to dataset.
 * Make a copy of downloaded datasets to FPA/dataset
 
