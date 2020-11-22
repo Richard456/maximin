@@ -30,7 +30,7 @@ def defender(loop,args):
     batch_size = 128
     image_size = 28
     n_epoch = 100
-
+    # Use random seed to achieve privacy
     # manual_seed = random.randint(1, 10000)
     manual_seed = 1
     random.seed(manual_seed)
