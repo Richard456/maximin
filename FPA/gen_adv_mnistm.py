@@ -147,7 +147,7 @@ if __name__ == "__main__":
                              eps_iter=0.01, rand_init=True, clip_min=0., clip_max=1.,
                              targeted=False, num_classes=10, elementwise_best=True)
 
-    adv_data_save_path = os.path.join('dataset/adv_mnistm')
+    adv_data_save_path = os.path.join('dataset','adv_mnistm')
     os.makedirs(adv_data_save_path, exist_ok=True)
 
     ########### generating train

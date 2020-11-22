@@ -17,7 +17,8 @@ import imageio
 from skimage import img_as_ubyte
 from PIL import Image
 
-def defender(loop):
+
+def defender(loop, args):
     source_dataset_name = 'MNIST'
     target_dataset_name = 'dann_adv_mnistm_recur'
     if loop==0:
@@ -28,14 +29,12 @@ def defender(loop):
     cudnn.benchmark = True
     lr = 3e-4
     batch_size = 128
-    image_size = 28
     n_epoch = 100
 
     # manual_seed = random.randint(1, 10000)
     manual_seed = 1
     random.seed(manual_seed)
     torch.manual_seed(manual_seed)
-
 
     # load data
     def data_load(eps):
@@ -197,32 +196,21 @@ def defender(loop):
 
         print('epoch: %d, accuracy of the %s dataset: %f' % (epoch, dataset_name, accu))
 
+    #----------------------------------------------------------------------------
+    train_dataloader_source, train_dataloader_target, \
+    test_dataloader_source, test_dataloader_target = data_load(eps=args.eps)
 
-    if __name__ == "__main__":
-        parser = argparse.ArgumentParser()
+    # training
+    for epoch in range(n_epoch):
+        train_one_epoch(model, train_dataloader_source, train_dataloader_target, epoch)
+        test(model, test_dataloader_source, source_dataset_name, epoch)
+        test(model, test_dataloader_target, target_dataset_name, epoch)
 
-        parser.add_argument('--gpu_id', type=str, nargs='?', default='0', help="device id to run")
-        parser.add_argument('--eps', default=8/255, type=float, help='eps')
-
-        args = parser.parse_args()
-        os.environ["CUDA_VISIBLE_DEVICES"] = args.gpu_id
-
-        print(args)
-
-        train_dataloader_source, train_dataloader_target, \
-        test_dataloader_source, test_dataloader_target = data_load(eps=args.eps)
-
-        # training
-        for epoch in range(n_epoch):
-            train_one_epoch(model, train_dataloader_source, train_dataloader_target, epoch)
-            test(model, test_dataloader_source, source_dataset_name, epoch)
-            test(model, test_dataloader_target, target_dataset_name, epoch)
-
-        torch.save(model, '{0}/FPA[{1}]_eps{2}.pth'.format(model_root,loop+1, args.eps))
+    torch.save(model, '{0}/FPA[{1}]_eps{2}.pth'.format(model_root,loop+1, args.eps))
 
 
 #------------------------------------------data generation------------------------
-def attacker(loop):
+def attacker(loop, args):
     if loop==0:
         return
     dataset_name = 'mnist_m'
@@ -272,7 +260,7 @@ def attacker(loop):
         num_workers=8)
 
     # load model
-    model_path = os.path.join('saved_models', 'FPA[{}]_eps0.03137254901960784.pth'.format(loop))
+    model_path = os.path.join('saved_models', 'FPA[{0}]_eps{1}.pth'.format(loop,args.eps))
     model = torch.load(model_path)
 
     # setup optimizer
@@ -346,38 +334,39 @@ def attacker(loop):
 
         return test_adv_data, test_adv_labels
 
+    #-------------------------------------------------------------------------------------
+    attacker = LinfPGDAttack(model, eps=args.eps, nb_iter=100,
+                             eps_iter=0.01, rand_init=True, clip_min=0., clip_max=1.,
+                             targeted=False, num_classes=10, elementwise_best=True)
 
-    if __name__ == "__main__":
-        parser = argparse.ArgumentParser()
+    adv_data_save_path = os.path.join('dataset','dann_adv_mnistm_recur')
+    os.makedirs(adv_data_save_path, exist_ok=True)
 
-        parser.add_argument('--gpu_id', type=str, nargs='?', default='0', help="device id to run")
-        parser.add_argument('--eps', default=8/255, type=float, help='eps')
+    ########### generating train
+    train_adv_data, train_adv_labels = train()
 
-        args = parser.parse_args()
-        os.environ["CUDA_VISIBLE_DEVICES"] = args.gpu_id
+    np.save(adv_data_save_path + '/train_eps' + str(args.eps), [train_adv_data, train_adv_labels])
 
-        attacker = LinfPGDAttack(model, eps=args.eps, nb_iter=100,
-                                 eps_iter=0.01, rand_init=True, clip_min=0., clip_max=1.,
-                                 targeted=False, num_classes=10, elementwise_best=True)
+    ########### generating test
+    test_adv_data, test_adv_labels = test()
 
-        adv_data_save_path = os.path.join('dataset/dann_adv_mnistm_recur')
-        os.makedirs(adv_data_save_path, exist_ok=True)
-
-        ########### generating train
-        train_adv_data, train_adv_labels = train()
-
-        np.save(adv_data_save_path + '/train_eps' + str(args.eps), [train_adv_data, train_adv_labels])
-
-        ########### generating test
-        test_adv_data, test_adv_labels = test()
-
-        np.save(adv_data_save_path + '/test_eps' + str(args.eps), [test_adv_data, test_adv_labels])
+    np.save(adv_data_save_path + '/test_eps' + str(args.eps), [test_adv_data, test_adv_labels])
 
 
-for i in range(20):
-    attacker(i)
-    defender(i)
-    print('FPA[{0}] finished.'.format(i))
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--gpu_id', type=str, nargs='?', default='0', help="device id to run")
+    parser.add_argument('--eps', default=8 / 255, type=float, help='eps')
+
+    args = parser.parse_args()
+    os.environ["CUDA_VISIBLE_DEVICES"] = args.gpu_id
+
+    print(args)
+
+    for i in range(20):
+        attacker(i,args)
+        defender(i,args)
+        print('FPA[{0}] finished.'.format(i))
 
 
 

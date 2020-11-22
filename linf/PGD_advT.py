@@ -150,7 +150,7 @@ def test(model, dataloader, epoch):
 
 # training
 for epoch in range(n_epoch):
-    train_one_epoch(model, train_dataloader, epoch)
+    train_one_epoch(model, train_dataloader_target, epoch)
     if epoch % 5 == 4:
         test(model, test_dataloader_target, epoch)
     torch.save(model, '{0}/PGD_advT_model.pth'.format(model_root))

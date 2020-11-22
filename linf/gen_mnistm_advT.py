@@ -10,7 +10,7 @@ import imageio
 from skimage import img_as_ubyte
 from PIL import Image
 import numpy as np
-from advertorch.attacks import L2PGDAttack
+from advertorch.attacks import LinfPGDAttack
 import sys
 sys.path.append('../')
 from data_utils import GetLoader
@@ -146,11 +146,11 @@ if __name__ == "__main__":
     args = parser.parse_args()
     os.environ["CUDA_VISIBLE_DEVICES"] = args.gpu_id
 
-    attacker = L2PGDAttack(model, loss_fn=nn.CrossEntropyLoss().cuda(), eps=args.eps,
+    attacker = LinfPGDAttack(model, loss_fn=nn.CrossEntropyLoss().cuda(), eps=args.eps,
                                nb_iter=100, eps_iter=0.01, rand_init=True, clip_min=0, clip_max=1.0,
                                targeted=False)
 
-    adv_data_save_path = os.path.join('dataset/l2_mnistm_advT')
+    adv_data_save_path = os.path.join('dataset','linf_mnistm_advT')
     os.makedirs(adv_data_save_path, exist_ok=True)
 
     ########### generating train

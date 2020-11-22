@@ -150,7 +150,7 @@ if __name__ == "__main__":
                                nb_iter=100, eps_iter=0.01, rand_init=True, clip_min=0, clip_max=1.0,
                                targeted=False)
 
-    adv_data_save_path = os.path.join('dataset/l2_mnistm_advT')
+    adv_data_save_path = os.path.join('dataset','l2_mnistm_advT')
     os.makedirs(adv_data_save_path, exist_ok=True)
 
     ########### generating train

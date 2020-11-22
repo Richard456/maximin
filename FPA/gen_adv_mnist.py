@@ -96,7 +96,10 @@ accu = n_correct.data.numpy() * 1.0 / n_total
 
 print('Adv acc:', accu)
 
-np.save('./dataset/adv_mnist/train', [train_adv_data, train_adv_labels])
+adv_data_save_path_train = 'dataset/adv_mnist/train'
+os.makedirs(adv_data_save_path_train, exist_ok=True)
+
+np.save(adv_data_save_path_train, [train_adv_data, train_adv_labels])
 
 n_total = 0
 n_correct = 0
@@ -124,4 +127,8 @@ accu = n_correct.data.numpy() * 1.0 / n_total
 
 print('Adv acc:', accu)
 
-np.save('./dataset/adv_mnist/test', [test_adv_data, test_adv_labels])
+adv_data_save_path_test = 'dataset/adv_mnist/test'
+os.makedirs(adv_data_save_path_test, exist_ok=True)
+
+np.save(adv_data_save_path_test, [test_adv_data, test_adv_labels])
+
