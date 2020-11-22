@@ -1,14 +1,17 @@
-#Prepare Datasets
+# Maximin 
+##Prepare Datasets
 * Download MNIST and MNIST-M to dataset.
 * Make a copy of downloaded datasets to FPA/dataset
-#Transfer Attack
-## l2 and linf attacks
+
+## l2 attacks
 ### Usage: 
 - Run l2.sh in l2 directory.
+## linf attacks
+### Usage:
 - Run linf.sh in linf directory.
 
-# FPA Attack
-## Prepare pretrained models
+## FPA Attacks
+### Usage:
 - Run FPA.sh in FPA directory
 
     
