@@ -1,6 +1,6 @@
 # Maximin 
 ## Prepare Datasets
-* Download MNIST and [MNIST_M](https://drive.google.com/drive/folders/0B_tExHiYS-0vR2dNZEU4NGlSSW8) to dataset.
+* Download MNIST and [MNIST-M](https://drive.google.com/drive/folders/0B_tExHiYS-0vR2dNZEU4NGlSSW8) to dataset.
 * Make a copy of downloaded datasets to FPA/dataset
 
 ## l2 attacks
