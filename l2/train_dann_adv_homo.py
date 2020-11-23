@@ -1,3 +1,5 @@
+##############################################################
+# Homogeneous case
 import random
 import os
 import argparse

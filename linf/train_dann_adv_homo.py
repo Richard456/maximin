@@ -1,3 +1,5 @@
+##############################################################
+# Homogeneous case
 import random
 import os
 import argparse
@@ -11,9 +13,6 @@ import sys
 sys.path.append('../')
 from data_utils import ADVMNISTLoader
 from model import *
-
-
-# from test import test
 
 source_dataset_name = 'MNIST'
 target_dataset_name = 'linf_mnist_advS'

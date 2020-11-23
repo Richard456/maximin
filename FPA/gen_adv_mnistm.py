@@ -1,3 +1,5 @@
+##############################################################
+# Generate adversarial datapoints
 import random
 import os
 import argparse

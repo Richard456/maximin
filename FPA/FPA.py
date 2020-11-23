@@ -1,3 +1,5 @@
+##############################################################
+# Fix point attack for inhomogeneous case
 import random
 import os
 import argparse

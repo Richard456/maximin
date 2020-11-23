@@ -1,3 +1,5 @@
+##############################################################
+# Prepare adv mnistm model
 import random
 import os
 import torch.backends.cudnn as cudnn

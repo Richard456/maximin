@@ -2,4 +2,7 @@ dataset/*
 FPA/dataset/*
 l2/dataset/*
 linf/dataset/*
-
+__pycache__/*
+FPA/__pycache__/*
+l2/__pycache__/*
+linf/__pycache__/*
